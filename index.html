@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111111" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Budget Flow" />
+  <title>Budget Flow</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">PERSONAL BUDGET</p>
+        <h1>Budget Flow</h1>
+        <p class="subtitle">Un piccolo budget book che vive sul tuo dispositivo.</p>
+      </div>
+      <button id="resetBtn" class="ghost danger" type="button">Reset</button>
+    </header>
+
+    <section id="setupCard" class="card setup-card">
+      <h2>Imposta il periodo</h2>
+      <p class="muted">Inserisci quanto vuoi spendere in totale e fino a quale giorno deve durare il budget.</p>
+      <div class="form-grid">
+        <label>
+          Budget totale (€)
+          <input id="totalBudget" type="number" min="0" step="0.01" placeholder="600" />
+        </label>
+        <label>
+          Data finale
+          <input id="endDate" type="date" />
+        </label>
+      </div>
+      <button id="startBtn" class="primary" type="button">Crea budget</button>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="stats-grid">
+        <article class="stat-card accent">
+          <span>Disponibile oggi</span>
+          <strong id="todayAvailable">€0,00</strong>
+          <small id="todayBaseText">Budget base: €0,00</small>
+        </article>
+        <article class="stat-card">
+          <span>Speso oggi</span>
+          <strong id="spentToday">€0,00</strong>
+          <small id="carryText">Avanzo accumulato: €0,00</small>
+        </article>
+        <article class="stat-card">
+          <span>Rimanente totale</span>
+          <strong id="remainingTotal">€0,00</strong>
+          <small id="daysText">0 giorni inclusi oggi</small>
+        </article>
+      </div>
+
+      <section class="card bank-card">
+        <div class="section-heading bank-heading">
+          <div>
+            <p class="eyebrow">BANCA SIMULATA</p>
+            <h2>Conto collegato <span class="demo-badge">DEMO</span></h2>
+          </div>
+          <div class="connection-status"><span class="status-dot"></span> Collegato</div>
+        </div>
+        <p class="muted bank-explainer">Non c'è nessuna banca reale collegata. Qui simuliamo cosa succederebbe se l'app ricevesse automaticamente una transazione dopo un pagamento.</p>
+        <div class="fake-account">
+          <div>
+            <span>Conto demo</span>
+            <strong>•••• 4821</strong>
+          </div>
+          <small>Dati locali · nessuna API bancaria</small>
+        </div>
+        <form id="bankPaymentForm" class="bank-form">
+          <label>
+            Importo pagamento (€)
+            <input id="bankAmount" type="number" min="0.01" step="0.01" placeholder="16.40" required />
+          </label>
+          <label>
+            Esercente
+            <input id="bankMerchant" type="text" maxlength="80" placeholder="Esselunga" required />
+          </label>
+          <button class="primary" type="submit">Simula pagamento</button>
+        </form>
+        <div id="bankFeedback" class="bank-feedback hidden" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card spend-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">NUOVA SPESA</p>
+            <h2>Aggiungi manualmente</h2>
+          </div>
+        </div>
+        <form id="expenseForm" class="expense-form">
+          <label>
+            Importo (€)
+            <input id="expenseAmount" type="number" min="0.01" step="0.01" placeholder="12.50" required />
+          </label>
+          <label>
+            Nota
+            <input id="expenseNote" type="text" maxlength="80" placeholder="Pranzo, benzina, spesa…" />
+          </label>
+          <label>
+            Data
+            <input id="expenseDate" type="date" required />
+          </label>
+          <button class="primary" type="submit">Aggiungi</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ANDAMENTO</p>
+            <h2>Oggi</h2>
+          </div>
+          <span id="statusPill" class="pill">In budget</span>
+        </div>
+        <div class="progress-track" aria-label="Percentuale del budget giornaliero usata">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <p id="dailyMessage" class="daily-message"></p>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">REGISTRO</p>
+            <h2>Spese recenti</h2>
+          </div>
+        </div>
+        <div id="expensesList" class="expenses-list"></div>
+      </section>
+
+      <section class="card backup-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">DATI LOCALI</p>
+            <h2>Backup</h2>
+          </div>
+        </div>
+        <p class="muted">Le spese restano su questo dispositivo. Esporta ogni tanto un backup JSON e conservalo fuori dalla repository.</p>
+        <div class="backup-actions">
+          <button id="exportBtn" class="ghost" type="button">Esporta backup</button>
+          <label class="ghost file-button" for="importFile">Importa backup</label>
+          <input id="importFile" class="visually-hidden" type="file" accept="application/json,.json" />
+        </div>
+        <p id="backupFeedback" class="backup-feedback hidden" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card info-card">
+        <h2>Come funziona la demo bancaria</h2>
+        <p>Quando premi “Simula pagamento”, viene creata localmente una transazione bancaria finta. Per un breve momento risulta <strong>in attesa</strong>; quando viene “contabilizzata”, entra automaticamente nelle spese e riduce il budget. In una versione reale quella transazione arriverebbe da un provider Open Banking invece che da questo simulatore.</p>
+      </section>
+    </section>
+  </main>
+
+  <template id="expenseTemplate">
+    <article class="expense-row">
+      <div>
+        <div class="expense-title-line">
+          <strong class="expense-note"></strong>
+          <span class="source-badge"></span>
+          <span class="pending-badge hidden">IN ATTESA</span>
+        </div>
+        <small class="expense-date"></small>
+      </div>
+      <div class="expense-actions">
+        <strong class="expense-amount"></strong>
+        <button class="icon-button" type="button" title="Elimina spesa" aria-label="Elimina spesa">×</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Never commit personal budget exports
+budget-flow-backup-*.json
+*.budget.json
+*.backup.json
+
+# Local secrets / environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies and OS/editor noise
+node_modules/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
